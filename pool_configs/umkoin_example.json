@@ -1,0 +1,63 @@
+{
+    "enabled": true,
+    "coin": "umkoin.json",
+
+    "address": "13LNDeeygB67WLP4KWmyELL9AFSiqh44aC",
+
+    "rewardRecipients": {
+        "13T5pDy3mTE6AURrAdoXGbQncTu2ZJPBtq": 0.5,
+        "3F9yGdEDthu4QcsTyunYQ7iPgzf3XgnbWr": 0.5
+    },
+
+    "paymentProcessing": {
+        "enabled": false,
+        "paymentInterval": 30,
+        "minimumPayment": 0.1,
+        "daemon": {
+            "host": "127.0.0.1",
+            "port": 6332,
+            "user": "rpcuser",
+            "password": "rpcpass"
+        }
+    },
+
+    "ports": {
+        "3333": {
+            "diff": 256,
+            "varDiff": {
+                "minDiff": 16,
+                "maxDiff": 8192,
+                "targetTime": 15,
+                "retargetTime": 90,
+                "variancePercent": 30
+            }
+        }
+    },
+
+    "daemons": [
+        {
+            "host": "127.0.0.1",
+            "port": 6332,
+            "user": "rpcuser",
+            "password": "rpcpass"
+        }
+    ],
+
+    "p2p": {
+        "enabled": false,
+        "host": "127.0.0.1",
+        "port": 8333,
+        "disableTransactions": true
+    },
+
+    "mposMode": {
+        "enabled": false,
+        "host": "127.0.0.1",
+        "port": 3306,
+        "user": "dbuser",
+        "password": "dbpass",
+        "database": "db",
+        "checkPassword": false,
+        "autoCreateWorker": true
+    }
+}

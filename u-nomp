@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ~/pools/nomp
+~/.nvm/v0.10.25/bin/node init.js
