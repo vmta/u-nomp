@@ -2,7 +2,7 @@
     "logLevel": "debug",
     "logColors": true,
 
-    "cliPort": 17117,
+    "cliPort": 27117,
 
     "clustering": {
         "enabled": true,

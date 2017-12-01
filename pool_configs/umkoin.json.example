@@ -2,11 +2,10 @@
     "enabled": true,
     "coin": "umkoin.json",
 
-    "address": "13LNDeeygB67WLP4KWmyELL9AFSiqh44aC",
+    "address": "1PQY6EXe1b8DAqEpCFTDLq8MJ7KP3gpd1F",
 
     "rewardRecipients": {
-        "13T5pDy3mTE6AURrAdoXGbQncTu2ZJPBtq": 0.5,
-        "3F9yGdEDthu4QcsTyunYQ7iPgzf3XgnbWr": 0.5
+        "19mV9SzrRXFtJtzcRmeqr6pyxZ3A2yvRyX": 1.0
     },
 
     "paymentProcessing": {
@@ -22,12 +21,12 @@
     },
 
     "ports": {
-        "3333": {
+        "3335": {
             "diff": 256,
             "varDiff": {
-                "minDiff": 16,
+                "minDiff": 8,
                 "maxDiff": 8192,
-                "targetTime": 15,
+                "targetTime": 10,
                 "retargetTime": 90,
                 "variancePercent": 30
             }
@@ -46,7 +45,7 @@
     "p2p": {
         "enabled": false,
         "host": "127.0.0.1",
-        "port": 8333,
+        "port": 6333,
         "disableTransactions": true
     },
 
