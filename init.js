@@ -11,18 +11,17 @@ var CliListener = require('./libs/cliListener.js');
 var PoolWorker = require('./libs/poolWorker.js');
 var PaymentProcessor = require('./libs/paymentProcessor.js');
 var Website = require('./libs/website.js');
-var ProfitSwitch = require('./libs/profitSwitch.js');
 
 var algos = require('stratum-pool/lib/algoProperties.js');
 
 JSON.minify = JSON.minify || require("node-json-minify");
 
-if (!fs.existsSync('config.json')){
-    console.log('config.json file does not exist. Read the installation/setup instructions.');
+if (!fs.existsSync('/opt/config.json')){
+    console.log('/opt/config.json file does not exist. Read the installation/setup instructions.');
     return;
 }
 
-var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("config.json", {encoding: 'utf8'})));
+var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("/opt/config.json", {encoding: 'utf8'})));
 var poolConfigs;
 
 
@@ -30,15 +29,6 @@ var logger = new PoolLogger({
     logLevel: portalConfig.logLevel,
     logColors: portalConfig.logColors
 });
-
-
-
-
-try {
-    require('newrelic');
-    if (cluster.isMaster)
-        logger.debug('NewRelic', 'Monitor', 'New Relic initiated');
-} catch(e) {}
 
 
 //Try to give process ability to handle 100k concurrent connections
@@ -79,9 +69,6 @@ if (cluster.isWorker){
         case 'website':
             new Website(logger);
             break;
-        case 'profitSwitch':
-            new ProfitSwitch(logger);
-            break;
     }
 
     return;
@@ -91,12 +78,12 @@ if (cluster.isWorker){
 //Read all pool configs from pool_configs and join them with their coin profile
 var buildPoolConfigs = function(){
     var configs = {};
-    var configDir = 'pool_configs/';
+    var configDir = '/opt/';
 
     var poolConfigFiles = [];
 
 
-    /* Get filenames of pool config json files that are enabled */
+    /* Get filenames of pool /opt/config.json files that are enabled */
     fs.readdirSync(configDir).forEach(function(file){
         if (!fs.existsSync(configDir + file) || path.extname(configDir + file) !== '.json') return;
         var poolOptions = JSON.parse(JSON.minify(fs.readFileSync(configDir + file, {encoding: 'utf8'})));
@@ -104,30 +91,6 @@ var buildPoolConfigs = function(){
         poolOptions.fileName = file;
         poolConfigFiles.push(poolOptions);
     });
-
-
-    /* Ensure no pool uses any of the same ports as another pool */
-    for (var i = 0; i < poolConfigFiles.length; i++){
-        var ports = Object.keys(poolConfigFiles[i].ports);
-        for (var f = 0; f < poolConfigFiles.length; f++){
-            if (f === i) continue;
-            var portsF = Object.keys(poolConfigFiles[f].ports);
-            for (var g = 0; g < portsF.length; g++){
-                if (ports.indexOf(portsF[g]) !== -1){
-                    logger.error('Master', poolConfigFiles[f].fileName, 'Has same configured port of ' + portsF[g] + ' as ' + poolConfigFiles[i].fileName);
-                    process.exit(1);
-                    return;
-                }
-            }
-
-            if (poolConfigFiles[f].coin === poolConfigFiles[i].coin){
-                logger.error('Master', poolConfigFiles[f].fileName, 'Pool has same configured coin file coins/' + poolConfigFiles[f].coin + ' as ' + poolConfigFiles[i].fileName + ' pool');
-                process.exit(1);
-                return;
-            }
-
-        }
-    }
 
 
     poolConfigFiles.forEach(function(poolOptions){
@@ -143,17 +106,6 @@ var buildPoolConfigs = function(){
         var coinProfile = JSON.parse(JSON.minify(fs.readFileSync(coinFilePath, {encoding: 'utf8'})));
         poolOptions.coin = coinProfile;
         poolOptions.coin.name = poolOptions.coin.name.toLowerCase();
-
-        if (poolOptions.coin.name in configs){
-
-            logger.error('Master', poolOptions.fileName, 'coins/' + poolOptions.coinFileName
-                + ' has same configured coin name ' + poolOptions.coin.name + ' as coins/'
-                + configs[poolOptions.coin.name].coinFileName + ' used by pool config '
-                + configs[poolOptions.coin.name].fileName);
-
-            process.exit(1);
-            return;
-        }
 
         for (var option in portalConfig.defaultPoolConfigs){
             if (!(option in poolOptions)){
@@ -182,21 +134,6 @@ var buildPoolConfigs = function(){
 
 
 var spawnPoolWorkers = function(){
-
-    Object.keys(poolConfigs).forEach(function(coin){
-        var p = poolConfigs[coin];
-
-        if (!Array.isArray(p.daemons) || p.daemons.length < 1){
-            logger.error('Master', coin, 'No daemons configured so a pool cannot be started for this coin.');
-            delete poolConfigs[coin];
-        }
-    });
-
-    if (Object.keys(poolConfigs).length === 0){
-        logger.warning('Master', 'PoolSpawner', 'No pool configs exists or are enabled in pool_configs folder. No pools spawned.');
-        return;
-    }
-
 
     var serializedConfigs = JSON.stringify(poolConfigs);
 
@@ -404,28 +341,6 @@ var startWebsite = function(){
 };
 
 
-var startProfitSwitch = function(){
-
-    if (!portalConfig.profitSwitch || !portalConfig.profitSwitch.enabled){
-        //logger.error('Master', 'Profit', 'Profit auto switching disabled');
-        return;
-    }
-
-    var worker = cluster.fork({
-        workerType: 'profitSwitch',
-        pools: JSON.stringify(poolConfigs),
-        portalConfig: JSON.stringify(portalConfig)
-    });
-    worker.on('exit', function(code, signal){
-        logger.error('Master', 'Profit', 'Profit switching process died, spawning replacement...');
-        setTimeout(function(){
-            startWebsite(portalConfig, poolConfigs);
-        }, 2000);
-    });
-};
-
-
-
 (function init(){
 
     poolConfigs = buildPoolConfigs();
@@ -435,8 +350,6 @@ var startProfitSwitch = function(){
     startPaymentProcessor();
 
     startWebsite();
-
-    startProfitSwitch();
 
     startCliListener();
 
