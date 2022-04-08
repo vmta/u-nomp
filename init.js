@@ -17,12 +17,12 @@ var algos = require('stratum-pool/lib/algoProperties.js');
 
 JSON.minify = JSON.minify || require("node-json-minify");
 
-if (!fs.existsSync('config.json')){
-    console.log('config.json file does not exist. Read the installation/setup instructions.');
+if (!fs.existsSync('config/config.json')){
+    console.log('config/config.json file does not exist. Read the installation/setup instructions.');
     return;
 }
 
-var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("config.json", {encoding: 'utf8'})));
+var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("config/config.json", {encoding: 'utf8'})));
 var poolConfigs;
 
 
@@ -88,17 +88,18 @@ if (cluster.isWorker){
 } 
 
 
-//Read all pool configs from pool_configs and join them with their coin profile
+//Read all pool configs from config and join them with their coin profile
 var buildPoolConfigs = function(){
     var configs = {};
-    var configDir = 'pool_configs/';
+    var configDir = 'config/';
+    var configExt - '.pool.json';
 
     var poolConfigFiles = [];
 
 
     /* Get filenames of pool config json files that are enabled */
     fs.readdirSync(configDir).forEach(function(file){
-        if (!fs.existsSync(configDir + file) || path.extname(configDir + file) !== '.json') return;
+        if (!fs.existsSync(configDir + file) || path.extname(configDir + file) !== configExt) return;
         var poolOptions = JSON.parse(JSON.minify(fs.readFileSync(configDir + file, {encoding: 'utf8'})));
         if (!poolOptions.enabled) return;
         poolOptions.fileName = file;
@@ -193,7 +194,7 @@ var spawnPoolWorkers = function(){
     });
 
     if (Object.keys(poolConfigs).length === 0){
-        logger.warning('Master', 'PoolSpawner', 'No pool configs exists or are enabled in pool_configs folder. No pools spawned.');
+        logger.warning('Master', 'PoolSpawner', 'No pool configs exists or are enabled in config folder. No pools spawned.');
         return;
     }
 
