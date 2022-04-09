@@ -41,7 +41,7 @@
         "body-parser": "*",
         "compression": "*",
         "dot": "*",
-        "colors": "*",
+        "colors": "1.4.0",
         "node-watch": "*",
         "request": "*",
         "nonce": "*",
