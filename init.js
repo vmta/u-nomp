@@ -17,12 +17,12 @@ var algos = require('stratum-pool/lib/algoProperties.js');
 
 JSON.minify = JSON.minify || require("node-json-minify");
 
-if (!fs.existsSync('config/config.json')){
-    console.log('config/config.json file does not exist. Read the installation/setup instructions.');
+if (!fs.existsSync('../config/config.json')){
+    console.log('../config/config.json file does not exist. Read the installation/setup instructions.');
     return;
 }
 
-var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("config/config.json", {encoding: 'utf8'})));
+var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("../config/config.json", {encoding: 'utf8'})));
 var poolConfigs;
 
 
@@ -85,13 +85,13 @@ if (cluster.isWorker){
     }
 
     return;
-} 
+}
 
 
 //Read all pool configs from config and join them with their coin profile
 var buildPoolConfigs = function(){
     var configs = {};
-    var configDir = 'config/';
+    var configDir = '../config/';
     var configExt = '.pool.json';
 
     var poolConfigFiles = [];
