@@ -92,7 +92,7 @@ if (cluster.isWorker){
 var buildPoolConfigs = function(){
     var configs = {};
     var configDir = 'config/';
-    var configExt - '.pool.json';
+    var configExt = '.pool.json';
 
     var poolConfigFiles = [];
 
