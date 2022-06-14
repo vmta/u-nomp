@@ -8,20 +8,11 @@
         "pool",
         "server",
         "poolserver",
-        "bitcoin",
-        "litecoin",
-        "scrypt"
+        "umkoin"
     ],
     "homepage": "https://github.com/vmta/u-nomp",
-    "bugs": {
-        "url": ""
-    },
     "license": "GPL-2.0",
     "author": "Matthew Little",
-    "contributors": [
-        "vekexasia",
-        "TheSeven"
-    ],
     "main": "init.js",
     "bin": {
         "block-notify": "./scripts/blockNotify.js"
@@ -31,7 +22,7 @@
         "url": "https://github.com/vmta/u-nomp.git"
     },
     "dependencies": {
-        "stratum-pool": "git://github.com/vmta/node-stratum-pool.git",
+        "stratum-pool": "git://github.com/zone117x/node-stratum-pool.git",
         "dateformat": "1.0.12",
         "node-json-minify": "*",
         "redis": "0.12.1",
@@ -42,10 +33,10 @@
         "compression": "*",
         "dot": "*",
         "colors": "1.4.0",
-        "node-watch": "*",
-        "request": "*",
+        "node-watch": "0.5.9",
+        "request": "2.69.0",
         "nonce": "*",
-        "bignum": "0.12.5",
+        "bignum": "0.13.1",
         "extend": "*"
     },
     "engines": {
