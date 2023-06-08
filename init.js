@@ -11,8 +11,6 @@ var CliListener = require('./libs/cliListener.js');
 var PoolWorker = require('./libs/poolWorker.js');
 var PaymentProcessor = require('./libs/paymentProcessor.js');
 var Website = require('./libs/website.js');
-// var ProfitSwitch = require('./libs/profitSwitch.js');
-
 var algos = require('stratum-pool/lib/algoProperties.js');
 
 JSON.minify = JSON.minify || require("node-json-minify");
@@ -21,24 +19,13 @@ if (!fs.existsSync('../config/config.json')){
     console.log('../config/config.json file does not exist. Read the installation/setup instructions.');
     return;
 }
-
 var portalConfig = JSON.parse(JSON.minify(fs.readFileSync("../config/config.json", {encoding: 'utf8'})));
 var poolConfigs;
-
 
 var logger = new PoolLogger({
     logLevel: portalConfig.logLevel,
     logColors: portalConfig.logColors
 });
-
-
-
-
-//try {
-//    require('newrelic');
-//    if (cluster.isMaster)
-//        logger.debug('NewRelic', 'Monitor', 'New Relic initiated');
-//} catch(e) {}
 
 
 //Try to give process ability to handle 100k concurrent connections
@@ -79,9 +66,6 @@ if (cluster.isWorker){
         case 'website':
             new Website(logger);
             break;
-//        case 'profitSwitch':
-//            new ProfitSwitch(logger);
-//            break;
     }
 
     return;
@@ -92,14 +76,14 @@ if (cluster.isWorker){
 var buildPoolConfigs = function(){
     var configs = {};
     var configDir = '../config/';
-    var configExt = '.pool.json';
+    var configExt = '.json';
 
     var poolConfigFiles = [];
 
 
     /* Get filenames of pool config json files that are enabled */
     fs.readdirSync(configDir).forEach(function(file){
-        if (!fs.existsSync(configDir + file) || path.extname(configDir + file) !== configExt) return;
+        if (file == 'config.json' || !fs.existsSync(configDir + file) || path.extname(configDir + file) !== configExt) return;
         var poolOptions = JSON.parse(JSON.minify(fs.readFileSync(configDir + file, {encoding: 'utf8'})));
         if (!poolOptions.enabled) return;
         poolOptions.fileName = file;
@@ -405,40 +389,12 @@ var startWebsite = function(){
 };
 
 
-//var startProfitSwitch = function(){
-//
-//    if (!portalConfig.profitSwitch || !portalConfig.profitSwitch.enabled){
-//        //logger.error('Master', 'Profit', 'Profit auto switching disabled');
-//        return;
-//    }
-//
-//    var worker = cluster.fork({
-//        workerType: 'profitSwitch',
-//        pools: JSON.stringify(poolConfigs),
-//        portalConfig: JSON.stringify(portalConfig)
-//    });
-//    worker.on('exit', function(code, signal){
-//        logger.error('Master', 'Profit', 'Profit switching process died, spawning replacement...');
-//        setTimeout(function(){
-//            startWebsite(portalConfig, poolConfigs);
-//        }, 2000);
-//    });
-//};
-
-
-
 (function init(){
 
     poolConfigs = buildPoolConfigs();
-
     spawnPoolWorkers();
-
     startPaymentProcessor();
-
     startWebsite();
-
-//    startProfitSwitch();
-
     startCliListener();
 
 })();

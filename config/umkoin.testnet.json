@@ -1,0 +1,44 @@
+{
+    "enabled": true,
+    "coin": "umkoin.t.json",
+
+    "address": "muozyj2WUxUzwmk8pGZ5esFbcHEqWi3KS3",
+
+    "rewardRecipients": {
+        "msfZHkbweYRvXe1m3YKSEwViByzW8MoThM": 1.0
+    },
+
+    "paymentProcessing": {
+        "enabled": true,
+        "paymentInterval": 900,
+        "minimumPayment": 1,
+        "daemon": {
+            "host": "rpc1",
+            "port": 16332,
+            "user": "rpcuser",
+            "password": "rpcpass"
+        }
+    },
+
+    "ports": {
+        "16334": {
+            "diff": 64,
+            "varDiff": {
+                "minDiff": 2,
+                "maxDiff": 16777216,
+                "targetTime": 10,
+                "retargetTime": 600,
+                "variancePercent": 25
+            }
+        }
+    },
+
+    "daemons": [
+        {
+            "host": "rpc1",
+            "port": 16332,
+            "user": "rpcuser",
+            "password": "rpcpass"
+        }
+    ]
+}

@@ -24,19 +24,19 @@
             "purgeInterval": 300
         },
         "redis": {
-            "host": "127.0.0.1",
+            "host": "redis",
             "port": 6379
         }
     },
 
     "website": {
         "enabled": true,
-        "host": "0.0.0.0",
+        "host": "pool",
         "port": 80,
-        "stratumHost": "cryppit.com",
+        "stratumHost": "pool",
         "stats": {
             "updateInterval": 60,
-            "historicalRetention": 43200,
+            "historicalRetention": 604800,
             "hashrateWindow": 300
         },
         "adminCenter": {
@@ -46,7 +46,7 @@
     },
 
     "redis": {
-        "host": "127.0.0.1",
+        "host": "redis",
         "port": 6379
     },
 
@@ -66,48 +66,6 @@
                     }
                 }
             }
-        },
-        "switch2": {
-            "enabled": false,
-            "algorithm": "scrypt",
-            "ports": {
-                "4444": {
-                    "diff": 10,
-                    "varDiff": {
-                        "minDiff": 16,
-                        "maxDiff": 512,
-                        "targetTime": 15,
-                        "retargetTime": 90,
-                        "variancePercent": 30
-                    }
-                }
-            }
-        },
-        "switch3": {
-            "enabled": false,
-            "algorithm": "x11",
-            "ports": {
-                "5555": {
-                    "diff": 0.001,
-                    "varDiff": {
-                        "minDiff": 0.001,
-                        "maxDiff": 1, 
-                        "targetTime": 15, 
-                        "retargetTime": 60, 
-                        "variancePercent": 30 
-                    }
-                }
-            }
         }
-    },
-
-    "profitSwitch": {
-        "enabled": false,
-        "updateInterval": 600,
-        "depth": 0.90,
-        "usePoloniex": true,
-        "useCryptsy": true,
-        "useMintpal": true,
-        "useBittrex": true
     }
 }
